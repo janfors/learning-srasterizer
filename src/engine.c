@@ -67,10 +67,22 @@ void run(Engine *engine) {
 void updatePixels(Engine *engine) {
   pixelsClear(&engine->pixelBuff, rgbu32(6, 7, 12, 255));
 
+  drawPixel(engine->pixelBuff.pixels, 100, 200, engine->pixelBuff.width, rgbu32(255, 0, 0, 255));
+  drawPixel(engine->pixelBuff.pixels, 200, 100, engine->pixelBuff.width, rgbu32(255, 0, 0, 255));
+
   Vec2i a = {600, 400};
   Vec2i b = {700, 300};
   Vec2i c = {500, 600};
   drawTriangleFilled(&a, &b, &c, rgbu32(255, 255, 255, 255), &engine->pixelBuff);
+
+  Vec2i d = {700, 400};
+  Vec2i e = {800, 300};
+  Vec2i f = {600, 600};
+  drawTriangleWireframe(&d, &e, &f, rgbu32(100, 200, 100, 255), &engine->pixelBuff);
+
+  Vec2i x = {100, 200};
+  Vec2i y = {200, 100};
+  drawLine(&x, &y, rgbu32(128, 128, 128, 255), &engine->pixelBuff);
 }
 
 void engineDestroy(Engine *engine) {

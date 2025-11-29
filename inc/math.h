@@ -20,6 +20,9 @@ static inline float minf(float a, float b) { return a < b ? a : b; }
 static inline int maxi(int a, int b) { return a > b ? a : b; }
 static inline int mini(int a, int b) { return a < b ? a : b; }
 
+static inline int absi(int x) { return x >= 0 ? x : -x; }
+static inline int signi(int x) { return x >= 0 ? 1 : -1; }
+
 static inline Vec3f cross(Vec3f a, Vec3f b) {
   return (Vec3f){
       a.y * b.z - a.z * b.y,
