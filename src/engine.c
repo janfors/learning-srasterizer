@@ -38,54 +38,55 @@ Engine *engineInit(Engine *engine, int width, int height, const char *name) {
   uint32_t *pixels = calloc(width * height, sizeof(uint32_t));
   engine->pixelBuff = (PixelBuffer){pixels, width, height};
 
+  Scene *scene = malloc(sizeof(Scene));
+  initScene(scene, 32);
+  engine->scene = scene;
+
   return engine;
+}
+
+static void handleEvents(Engine *engine) {
+  SDL_Event e;
+
+  while (SDL_PollEvent(&e) != 0) {
+    switch (e.type) {
+    case SDL_QUIT:
+      engine->running = false;
+    case SDL_KEYDOWN: {
+
+      toggleWireframeMode(engine->scene);
+    }
+    }
+  }
+}
+
+static void render(Engine *engine) {
+  updatePixels(engine);
+
+  SDL_RenderClear(engine->renderer);
+  SDL_UpdateTexture(engine->texture, NULL, engine->pixelBuff.pixels,
+                    engine->pixelBuff.width * sizeof(uint32_t));
+  SDL_RenderCopy(engine->renderer, engine->texture, NULL, NULL);
+
+  SDL_RenderPresent(engine->renderer);
 }
 
 void run(Engine *engine) {
   engine->running = true;
 
   while (engine->running) {
-    SDL_Event e;
-
-    while (SDL_PollEvent(&e) != 0) {
-      switch (e.type) {
-      case SDL_QUIT:
-        engine->running = false;
-      }
-    }
-
-    updatePixels(engine);
-    SDL_RenderClear(engine->renderer);
-    SDL_UpdateTexture(engine->texture, NULL, engine->pixelBuff.pixels,
-                      engine->pixelBuff.width * sizeof(uint32_t));
-    SDL_RenderCopy(engine->renderer, engine->texture, NULL, NULL);
-
-    SDL_RenderPresent(engine->renderer);
+    handleEvents(engine);
+    render(engine);
   }
 }
 
 void updatePixels(Engine *engine) {
   pixelsClear(&engine->pixelBuff, rgbu32(6, 7, 12, 255));
-
-  drawPixel(engine->pixelBuff.pixels, 100, 200, engine->pixelBuff.width, rgbu32(255, 0, 0, 255));
-  drawPixel(engine->pixelBuff.pixels, 200, 100, engine->pixelBuff.width, rgbu32(255, 0, 0, 255));
-
-  Vec2i a = {600, 400};
-  Vec2i b = {700, 300};
-  Vec2i c = {500, 600};
-  drawTriangleFilled(&a, &b, &c, rgbu32(255, 255, 255, 255), &engine->pixelBuff);
-
-  Vec2i d = {700, 400};
-  Vec2i e = {800, 300};
-  Vec2i f = {600, 600};
-  drawTriangleWireframe(&d, &e, &f, rgbu32(100, 200, 100, 255), &engine->pixelBuff);
-
-  Vec2i x = {100, 200};
-  Vec2i y = {200, 100};
-  drawLine(&x, &y, rgbu32(128, 128, 128, 255), &engine->pixelBuff);
+  sceneRender(engine->scene, &engine->pixelBuff);
 }
 
 void engineDestroy(Engine *engine) {
+  sceneDeinit(engine->scene);
   free(engine->pixelBuff.pixels);
   SDL_DestroyTexture(engine->texture);
   SDL_DestroyRenderer(engine->renderer);

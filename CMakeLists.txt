@@ -6,7 +6,8 @@ project(SoftwareRasterizer C)
 
 find_package(SDL2 REQUIRED)
 
-set(SRCS src/main.c src/engine.c src/rasterizer.c src/math.c src/triangle.c)
+set(SRCS src/main.c src/engine.c src/rasterizer.c src/math.c src/triangle.c
+         src/scene.c)
 
 add_executable(app ${SRCS})
 

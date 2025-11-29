@@ -2,19 +2,16 @@
 #define _ENGINE_H
 
 #include <SDL2/SDL.h>
+#include <pixelbuffer.h>
+#include <scene.h>
 #include <stdbool.h>
-
-typedef struct {
-  uint32_t *pixels;
-  size_t width;
-  size_t height;
-} PixelBuffer;
 
 typedef struct {
   int width;
   int height;
 
   PixelBuffer pixelBuff;
+  Scene *scene;
 
   SDL_Window *window;
   SDL_Renderer *renderer;
