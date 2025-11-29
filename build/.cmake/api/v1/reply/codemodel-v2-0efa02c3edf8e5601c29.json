@@ -66,7 +66,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "app::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-app-Debug-d08b43b1576a4175d3e0.json",
+					"jsonFile" : "target-app-Debug-a67dbf20031c877b18b2.json",
 					"name" : "app",
 					"projectIndex" : 0
 				}
@@ -76,8 +76,8 @@
 	"kind" : "codemodel",
 	"paths" : 
 	{
-		"build" : "/home/janfors/dev/software-rasterizer/build",
-		"source" : "/home/janfors/dev/software-rasterizer"
+		"build" : "/home/janfors/dev/learning-srasterizer/build",
+		"source" : "/home/janfors/dev/learning-srasterizer"
 	},
 	"version" : 
 	{

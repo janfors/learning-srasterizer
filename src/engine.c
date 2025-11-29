@@ -66,7 +66,11 @@ void run(Engine *engine) {
 
 void updatePixels(Engine *engine) {
   pixelsClear(&engine->pixelBuff, rgbu32(6, 7, 12, 255));
-  ;
+
+  Vec2i a = {600, 400};
+  Vec2i b = {700, 300};
+  Vec2i c = {500, 600};
+  drawTriangleFilled(&a, &b, &c, rgbu32(255, 255, 255, 255), &engine->pixelBuff);
 }
 
 void engineDestroy(Engine *engine) {

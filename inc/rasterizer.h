@@ -6,6 +6,9 @@
 // clears the whole pixel buffer with {color}
 void pixelsClear(PixelBuffer *pixelBuffer, uint32_t color);
 
+// draw a triangle using a Barycentric Algorithm on the pixelBuffer
+void drawTriangleFilled(Vec2i *v1, Vec2i *v2, Vec2i *v3, uint32_t color, PixelBuffer *pixelBuffer);
+
 static inline void drawPixel(uint32_t *restrict pixels, size_t x, size_t y, size_t w,
                              uint32_t color) {
   pixels[y * w + x] = color;

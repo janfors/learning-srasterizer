@@ -6,9 +6,9 @@ project(SoftwareRasterizer C)
 
 find_package(SDL2 REQUIRED)
 
-set(srcs src/main.c src/engine.c src/rasterizer.c src/math.c)
+set(SRCS src/main.c src/engine.c src/rasterizer.c src/math.c src/triangle.c)
 
-add_executable(app ${srcs})
+add_executable(app ${SRCS})
 
 target_include_directories(app PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/inc)
 target_link_libraries(app PRIVATE SDL2::SDL2)

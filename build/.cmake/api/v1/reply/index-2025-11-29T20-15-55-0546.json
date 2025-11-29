@@ -26,7 +26,7 @@
 	"objects" : 
 	[
 		{
-			"jsonFile" : "codemodel-v2-fda506201c6ab1baf9f0.json",
+			"jsonFile" : "codemodel-v2-0efa02c3edf8e5601c29.json",
 			"kind" : "codemodel",
 			"version" : 
 			{
@@ -35,7 +35,7 @@
 			}
 		},
 		{
-			"jsonFile" : "configureLog-v1-173bd0be558ac2066aef.json",
+			"jsonFile" : "configureLog-v1-94e640a1ab5e8314d930.json",
 			"kind" : "configureLog",
 			"version" : 
 			{
@@ -44,7 +44,7 @@
 			}
 		},
 		{
-			"jsonFile" : "cache-v2-46939db19a61a435cf46.json",
+			"jsonFile" : "cache-v2-45508ddf654dae4163a8.json",
 			"kind" : "cache",
 			"version" : 
 			{
@@ -53,7 +53,7 @@
 			}
 		},
 		{
-			"jsonFile" : "cmakeFiles-v1-cd2a2853e0156f4d09a0.json",
+			"jsonFile" : "cmakeFiles-v1-9d75fe511ddb4a928482.json",
 			"kind" : "cmakeFiles",
 			"version" : 
 			{
@@ -73,6 +73,57 @@
 	],
 	"reply" : 
 	{
+		"client-4d702a8e-b48a-4abe-aa0b-35168c6c38ba" : 
+		{
+			"query.json" : 
+			{
+				"requests" : 
+				[
+					{
+						"kind" : "codemodel",
+						"version" : 2
+					},
+					{
+						"kind" : "cache",
+						"version" : 2
+					},
+					{
+						"kind" : "cmakeFiles",
+						"version" : 1
+					}
+				],
+				"responses" : 
+				[
+					{
+						"jsonFile" : "codemodel-v2-0efa02c3edf8e5601c29.json",
+						"kind" : "codemodel",
+						"version" : 
+						{
+							"major" : 2,
+							"minor" : 9
+						}
+					},
+					{
+						"jsonFile" : "cache-v2-45508ddf654dae4163a8.json",
+						"kind" : "cache",
+						"version" : 
+						{
+							"major" : 2,
+							"minor" : 0
+						}
+					},
+					{
+						"jsonFile" : "cmakeFiles-v1-9d75fe511ddb4a928482.json",
+						"kind" : "cmakeFiles",
+						"version" : 
+						{
+							"major" : 1,
+							"minor" : 1
+						}
+					}
+				]
+			}
+		},
 		"client-neocmake" : 
 		{
 			"query.json" : 
@@ -133,7 +184,7 @@
 				"responses" : 
 				[
 					{
-						"jsonFile" : "codemodel-v2-fda506201c6ab1baf9f0.json",
+						"jsonFile" : "codemodel-v2-0efa02c3edf8e5601c29.json",
 						"kind" : "codemodel",
 						"version" : 
 						{
@@ -142,7 +193,7 @@
 						}
 					},
 					{
-						"jsonFile" : "configureLog-v1-173bd0be558ac2066aef.json",
+						"jsonFile" : "configureLog-v1-94e640a1ab5e8314d930.json",
 						"kind" : "configureLog",
 						"version" : 
 						{
@@ -151,7 +202,7 @@
 						}
 					},
 					{
-						"jsonFile" : "cache-v2-46939db19a61a435cf46.json",
+						"jsonFile" : "cache-v2-45508ddf654dae4163a8.json",
 						"kind" : "cache",
 						"version" : 
 						{
@@ -160,7 +211,7 @@
 						}
 					},
 					{
-						"jsonFile" : "cmakeFiles-v1-cd2a2853e0156f4d09a0.json",
+						"jsonFile" : "cmakeFiles-v1-9d75fe511ddb4a928482.json",
 						"kind" : "cmakeFiles",
 						"version" : 
 						{

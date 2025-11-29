@@ -55,7 +55,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/home/janfors/dev/software-rasterizer/build"
+			"value" : "/home/janfors/dev/learning-srasterizer/build"
 		},
 		{
 			"name" : "CMAKE_CACHE_MAJOR_VERSION",
@@ -415,7 +415,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/home/janfors/dev/software-rasterizer/build/CMakeFiles/pkgRedirects"
+			"value" : "/home/janfors/dev/learning-srasterizer/build/CMakeFiles/pkgRedirects"
 		},
 		{
 			"name" : "CMAKE_GENERATOR",
@@ -475,7 +475,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/home/janfors/dev/software-rasterizer"
+			"value" : "/home/janfors/dev/learning-srasterizer"
 		},
 		{
 			"name" : "CMAKE_INSTALL_PREFIX",
@@ -1075,7 +1075,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/home/janfors/dev/software-rasterizer/build"
+			"value" : "/home/janfors/dev/learning-srasterizer/build"
 		},
 		{
 			"name" : "SoftwareRasterizer_IS_TOP_LEVEL",
@@ -1099,7 +1099,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/home/janfors/dev/software-rasterizer"
+			"value" : "/home/janfors/dev/learning-srasterizer"
 		}
 	],
 	"kind" : "cache",

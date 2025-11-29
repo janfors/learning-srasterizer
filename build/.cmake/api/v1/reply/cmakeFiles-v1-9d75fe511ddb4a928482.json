@@ -155,8 +155,8 @@
 	"kind" : "cmakeFiles",
 	"paths" : 
 	{
-		"build" : "/home/janfors/dev/software-rasterizer/build",
-		"source" : "/home/janfors/dev/software-rasterizer"
+		"build" : "/home/janfors/dev/learning-srasterizer/build",
+		"source" : "/home/janfors/dev/learning-srasterizer"
 	},
 	"version" : 
 	{

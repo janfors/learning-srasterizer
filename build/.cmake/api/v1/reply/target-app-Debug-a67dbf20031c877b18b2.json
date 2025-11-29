@@ -68,7 +68,7 @@
 			[
 				{
 					"backtrace" : 3,
-					"path" : "/home/janfors/dev/software-rasterizer/inc"
+					"path" : "/home/janfors/dev/learning-srasterizer/inc"
 				},
 				{
 					"backtrace" : 2,
@@ -82,7 +82,8 @@
 				0,
 				1,
 				2,
-				3
+				3,
+				4
 			]
 		}
 	],
@@ -126,7 +127,8 @@
 				0,
 				1,
 				2,
-				3
+				3,
+				4
 			]
 		}
 	],
@@ -154,6 +156,12 @@
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
 			"path" : "src/math.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/triangle.c",
 			"sourceGroupIndex" : 0
 		}
 	],
