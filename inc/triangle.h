@@ -10,7 +10,7 @@ typedef struct {
 } BoundingBox;
 
 // calculate the bounding box of a triangle defined in screen space
-BoundingBox getTriangleBoundingBox(Vec2i *v1, Vec2i *v2, Vec2i *v3);
+BoundingBox getTriangleBoundingBox(Vec3f *v1, Vec3f *v2, Vec3f *v3);
 
 // Barycentric edge function
 static inline float edgeFunction(Vec2f a, Vec2f b, Vec2f c) {

@@ -8,12 +8,12 @@
 #include <stdint.h>
 
 typedef struct {
-  Vec2i v1, v2, v3;
+  Vec3f v1, v2, v3;
   uint32_t color;
-} Triangle2D;
+} Triangle3D;
 
 typedef struct {
-  Triangle2D *triangles;
+  Triangle3D *triangles;
   size_t count, capacity;
   bool wireframeMode;
 } Scene;
@@ -23,9 +23,9 @@ static inline void toggleWireframeMode(Scene *scene) {
   scene->wireframeMode = !scene->wireframeMode;
 }
 
-// returns a Triangle2D with the specified values
-static inline Triangle2D createTriangle2D(Vec2i a, Vec2i b, Vec2i c, uint32_t color) {
-  return (Triangle2D){
+// returns a Triangle3D with the specified values
+static inline Triangle3D createTriangle3D(Vec3f a, Vec3f b, Vec3f c, uint32_t color) {
+  return (Triangle3D){
       .v1 = a,
       .v2 = b,
       .v3 = c,
@@ -37,10 +37,10 @@ static inline Triangle2D createTriangle2D(Vec2i a, Vec2i b, Vec2i c, uint32_t co
 void initScene(Scene *scene, size_t initialCapacity);
 
 // Adds the triangle to the list of scene triangles
-void sceneAddTriangle2D(Scene *scene, Triangle2D tri);
+void sceneAddTriangle3D(Scene *scene, Triangle3D tri);
 
 // remove the triangle stored at idx
-void sceneRemoveTriangle2D(Scene *scene, int idx);
+void sceneRemoveTriangle3D(Scene *scene, int idx);
 
 // Make the actual draw calls on the objects within the scene
 void sceneRender(Scene *scene, PixelBuffer *pixelBuffer);

@@ -6,6 +6,7 @@
 
 typedef struct {
   uint32_t *pixels;
+  float *depthBuffer;
   size_t width;
   size_t height;
 } PixelBuffer;

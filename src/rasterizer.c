@@ -6,7 +6,7 @@ void pixelsClear(PixelBuffer *pixelBuffer) {
   memset(pixelBuffer->pixels, 0, sizeof(uint32_t) * pixelBuffer->width * pixelBuffer->height);
 }
 
-void drawTriangleFilled(Vec2i *v1, Vec2i *v2, Vec2i *v3, uint32_t color, PixelBuffer *pixelBuffer) {
+void drawTriangleFilled(Vec3f *v1, Vec3f *v2, Vec3f *v3, uint32_t color, PixelBuffer *pixelBuffer) {
   BoundingBox bounds = getTriangleBoundingBox(v1, v2, v3);
   bounds.minX = maxi(0, bounds.minX);
   bounds.minY = maxi(0, bounds.minY);
@@ -17,65 +17,111 @@ void drawTriangleFilled(Vec2i *v1, Vec2i *v2, Vec2i *v3, uint32_t color, PixelBu
   Vec2f v2f = (Vec2f){v2->x, v2->y};
   Vec2f v3f = (Vec2f){v3->x, v3->y};
 
+  float z1 = v1->z;
+  float z2 = v2->z;
+  float z3 = v3->z;
+
   // Ensure the correct triangle winding
   float area = edgeFunction(v1f, v2f, v3f);
   if (area < 0) {
     Vec2f tmp = v2f;
     v2f = v3f;
     v3f = tmp;
+
+    float tmpz = z2;
+    z2 = z3;
+    z3 = tmpz;
+
     area = -area;
   }
 
-  float dw0 = v3f.y - v2f.y;
-  float dw1 = v1f.y - v3f.y;
-  float dw2 = v2f.y - v1f.y;
+  if (area == 0)
+    return;
+
+  float invArea = 1.0f / area;
+
+  float w0_dx = v3f.y - v2f.y;
+  float w0_dy = v2f.x - v3f.x;
+
+  float w1_dx = v1f.y - v3f.y;
+  float w1_dy = v3f.x - v1f.x;
+
+  float w2_dx = v2f.y - v1f.y;
+  float w2_dy = v1f.x - v2f.x;
+
+  Vec2f p = (Vec2f){bounds.minX + 0.5f, bounds.minY + 0.5f};
+  float w0_row = edgeFunction(v2f, v3f, p);
+  float w1_row = edgeFunction(v3f, v1f, p);
+  float w2_row = edgeFunction(v1f, v2f, p);
 
   for (int y = bounds.minY; y <= bounds.maxY; y++) {
-    Vec2f p = (Vec2f){bounds.minX + 0.5f, y + 0.5f};
-
-    // Calculate at the start of the scanline instead of per pixel
-    float w0 = edgeFunction(v2f, v3f, p);
-    float w1 = edgeFunction(v3f, v1f, p);
-    float w2 = edgeFunction(v1f, v2f, p);
+    float w0 = w0_row;
+    float w1 = w1_row;
+    float w2 = w2_row;
 
     for (int x = bounds.minX; x <= bounds.maxX; x++) {
-      if (w0 >= 0 && w1 >= 0 && w2 >= 0)
-        drawPixel(pixelBuffer->pixels, x, y, pixelBuffer->width, color);
+      if (w0 >= 0 && w1 >= 0 && w2 >= 0) {
+        float bw0 = w0 * invArea;
+        float bw1 = w1 * invArea;
+        float bw2 = w2 * invArea;
 
-      // they change linearly so we can not calculate them and just offset the w values
-      w0 += dw0;
-      w1 += dw1;
-      w2 += dw2;
+        float z = bw0 * z1 + bw1 * z2 + bw2 * z3;
+        int idx = y * pixelBuffer->width + x;
+
+        if (z < pixelBuffer->depthBuffer[idx]) {
+          pixelBuffer->depthBuffer[idx] = z;
+          pixelBuffer->pixels[idx] = color;
+        }
+      }
+
+      w0 += w0_dx;
+      w1 += w1_dx;
+      w2 += w2_dx;
     }
+
+    w0_row += w0_dy;
+    w1_row += w1_dy;
+    w2_row += w2_dy;
   }
 }
 
-void drawTriangleWireframe(Vec2i *v1, Vec2i *v2, Vec2i *v3, uint32_t color,
+void drawTriangleWireframe(Vec3f *v1, Vec3f *v2, Vec3f *v3, uint32_t color,
                            PixelBuffer *pixelBuffer) {
   drawLine(v1, v2, color, pixelBuffer);
   drawLine(v2, v3, color, pixelBuffer);
   drawLine(v3, v1, color, pixelBuffer);
 }
 
-void drawLine(Vec2i *a, Vec2i *b, uint32_t color, PixelBuffer *pixelBuffer) {
-  int x = a->x;
-  int y = a->y;
+void drawLine(Vec3f *a, Vec3f *b, uint32_t color, PixelBuffer *pixelBuffer) {
+  float x = a->x;
+  float y = a->y;
 
-  int dx = absi(b->x - a->x);
-  int dy = absi(b->y - a->y);
-  int signx = signi(b->x - a->x);
-  int signy = signi(b->y - a->y);
+  float dx = absf(b->x - a->x);
+  float dy = absf(b->y - a->y);
+  float dz = b->z - a->z;
+
+  int signx = signf(b->x - a->x);
+  int signy = signf(b->y - a->y);
 
   bool steep = dy > dx;
   if (steep) {
-    int tmp = dx;
+    float tmp = dx;
     dx = dy;
     dy = tmp;
   }
 
+  int majorD = steep ? dy : dx;
+  float t = 0.0f;
+  float dt = 1.0f / majorD;
+
   float e = 2 * dy - dx;
   for (int i = 0; i <= dx; i++) {
-    drawPixel(pixelBuffer->pixels, x, y, pixelBuffer->width, color);
+    float z = a->z + t * dz;
+    int idx = y * pixelBuffer->width + x;
+    if (z < pixelBuffer->depthBuffer[idx]) {
+      pixelBuffer->depthBuffer[idx] = z;
+      drawPixel(pixelBuffer->pixels, x, y, pixelBuffer->width, color);
+    }
 
     while (e >= 0) {
       if (steep)

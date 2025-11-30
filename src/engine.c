@@ -36,7 +36,8 @@ Engine *engineInit(Engine *engine, int width, int height, const char *name) {
   engine->running = false;
 
   uint32_t *pixels = calloc(width * height, sizeof(uint32_t));
-  engine->pixelBuff = (PixelBuffer){pixels, width, height};
+  float *depthBuffer = calloc(width * height, sizeof(float));
+  engine->pixelBuff = (PixelBuffer){pixels, depthBuffer, width, height};
 
   Scene *scene = malloc(sizeof(Scene));
   initScene(scene, 32);
@@ -103,8 +104,8 @@ void run(Engine *engine) {
 
     handleEvents(engine);
     render(engine);
-
     clock_gettime(CLOCK_MONOTONIC, &end);
+
     double frameTime = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
     updateFPS(frameTime);
   }
@@ -112,6 +113,10 @@ void run(Engine *engine) {
 
 void updatePixels(Engine *engine) {
   pixelsClear(&engine->pixelBuff);
+
+  for (int i = 0; i < engine->width * engine->height; i++)
+    engine->pixelBuff.depthBuffer[i] = 1e10;
+
   sceneRender(engine->scene, &engine->pixelBuff);
 }
 

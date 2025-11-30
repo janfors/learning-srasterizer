@@ -7,18 +7,26 @@ static void sceneSetup(Engine *engine) {
   int numTriangles = 1000;
 
   for (int i = 0; i < numTriangles; i++) {
-    int cx = rand() % 1200;
-    int cy = rand() % 800;
+    // Random center
+    float cx = rand() % 1200;
+    float cy = rand() % 800;
 
-    int size = 20 + rand() % 80;
+    // Small triangle size (20-100 pixels)
+    float size = 20 + rand() % 80;
 
-    Vec2i v0 = {cx + (rand() % size) - size / 2, cy + (rand() % size) - size / 2};
-    Vec2i v1 = {cx + (rand() % size) - size / 2, cy + (rand() % size) - size / 2};
-    Vec2i v2 = {cx + (rand() % size) - size / 2, cy + (rand() % size) - size / 2};
+    // Generate triangle vertices near the center
+    Vec3f v0 = {
+        cx + (rand() % (int)size) - size / 2.0f, cy + (rand() % (int)size) - size / 2.0f,
+        (float)(rand() % 1000) // Random depth 0-1000
+    };
+    Vec3f v1 = {cx + (rand() % (int)size) - size / 2.0f, cy + (rand() % (int)size) - size / 2.0f,
+                (float)(rand() % 1000)};
+    Vec3f v2 = {cx + (rand() % (int)size) - size / 2.0f, cy + (rand() % (int)size) - size / 2.0f,
+                (float)(rand() % 1000)};
 
     uint32_t color = rgbu32(rand() % 256, rand() % 256, rand() % 256, 255);
-    Triangle2D tri = createTriangle2D(v0, v1, v2, color);
-    sceneAddTriangle2D(engine->scene, tri);
+    Triangle3D tri = createTriangle3D(v0, v1, v2, color);
+    sceneAddTriangle3D(engine->scene, tri);
   }
 }
 

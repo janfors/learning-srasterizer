@@ -15,13 +15,17 @@ typedef struct {
   int x, y;
 } Vec2i;
 
+// All of these probably should have been macros...
 static inline float maxf(float a, float b) { return a > b ? a : b; }
 static inline float minf(float a, float b) { return a < b ? a : b; }
 static inline int maxi(int a, int b) { return a > b ? a : b; }
 static inline int mini(int a, int b) { return a < b ? a : b; }
 
+static inline float absf(float x) { return x >= 0 ? x : -x; }
 static inline int absi(int x) { return x >= 0 ? x : -x; }
-static inline int signi(int x) { return x >= 0 ? 1 : -1; }
+
+static inline float signf(float x) { return x > 0 ? 1.0f : x == 0 ? 0 : -1.0f; }
+static inline int signi(int x) { return x > 0 ? 1 : x == 0 ? 0 : -1; }
 
 static inline Vec3f cross(Vec3f a, Vec3f b) {
   return (Vec3f){
