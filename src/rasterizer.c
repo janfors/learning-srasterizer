@@ -93,15 +93,20 @@ void drawTriangleWireframe(Vec3f *v1, Vec3f *v2, Vec3f *v3, uint32_t color,
 }
 
 void drawLine(Vec3f *a, Vec3f *b, uint32_t color, PixelBuffer *pixelBuffer) {
-  float x = a->x;
-  float y = a->y;
+  if ((a->x < 0 && b->x < 0) || (a->x >= pixelBuffer->width && b->x >= pixelBuffer->width))
+    return;
+  if ((a->y < 0 && b->y < 0) || (a->y >= pixelBuffer->height && b->y >= pixelBuffer->height))
+    return;
 
-  float dx = absf(b->x - a->x);
-  float dy = absf(b->y - a->y);
+  int x = (int)a->x;
+  int y = (int)a->y;
+
+  int dx = (int)absf(b->x - a->x);
+  int dy = (int)absf(b->y - a->y);
   float dz = b->z - a->z;
 
-  int signx = signf(b->x - a->x);
-  int signy = signf(b->y - a->y);
+  int signx = (int)signf(b->x - a->x);
+  int signy = (int)signf(b->y - a->y);
 
   bool steep = dy > dx;
   if (steep) {
@@ -110,17 +115,30 @@ void drawLine(Vec3f *a, Vec3f *b, uint32_t color, PixelBuffer *pixelBuffer) {
     dy = tmp;
   }
 
-  int majorD = steep ? dy : dx;
+  if (dx == 0) {
+    if (x >= 0 && x < pixelBuffer->width && y >= 0 && y < pixelBuffer->height) {
+      int idx = y * pixelBuffer->width + x;
+      if (a->z < pixelBuffer->depthBuffer[idx]) {
+        pixelBuffer->depthBuffer[idx] = a->z;
+        pixelBuffer->pixels[idx] = color;
+      }
+    }
+
+    return;
+  }
+
   float t = 0.0f;
-  float dt = 1.0f / majorD;
+  float dt = 1.0f / (float)dx;
 
   float e = 2 * dy - dx;
   for (int i = 0; i <= dx; i++) {
-    float z = a->z + t * dz;
-    int idx = y * pixelBuffer->width + x;
-    if (z < pixelBuffer->depthBuffer[idx]) {
-      pixelBuffer->depthBuffer[idx] = z;
-      drawPixel(pixelBuffer->pixels, x, y, pixelBuffer->width, color);
+    if (x >= 0 && x < pixelBuffer->width && y >= 0 && y < pixelBuffer->height) {
+      float z = a->z + t * dz;
+      int idx = y * pixelBuffer->width + x;
+      if (z < pixelBuffer->depthBuffer[idx]) {
+        pixelBuffer->depthBuffer[idx] = z;
+        pixelBuffer->pixels[idx] = color;
+      }
     }
 
     while (e >= 0) {
