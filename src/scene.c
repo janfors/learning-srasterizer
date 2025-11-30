@@ -11,7 +11,7 @@ static void growArray(Scene *scene) {
 // to be called when used memory == capacity / 2
 static void shrinkArray(Scene *scene) {
   size_t newCapacity = scene->capacity / 2;
-  scene->triangles = realloc(scene->triangles, newCapacity);
+  scene->triangles = realloc(scene->triangles, newCapacity * sizeof(Triangle2D));
   scene->capacity = newCapacity;
 }
 
@@ -24,7 +24,7 @@ void initScene(Scene *scene, size_t initialCapacity) {
 }
 
 void sceneAddTriangle2D(Scene *scene, Triangle2D tri) {
-  if (scene->count + 1 == scene->capacity)
+  if (scene->count + 1 >= scene->capacity)
     growArray(scene);
 
   scene->triangles[scene->count++] = tri;

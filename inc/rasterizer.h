@@ -3,8 +3,8 @@
 
 #include <engine.h>
 
-// clears the whole pixel buffer with {color}
-void pixelsClear(PixelBuffer *pixelBuffer, uint32_t color);
+// clears the whole pixel buffer
+void pixelsClear(PixelBuffer *pixelBuffer);
 
 // draw a triangle using a Barycentric Algorithm on the pixelBuffer
 void drawTriangleFilled(Vec2i *v1, Vec2i *v2, Vec2i *v3, uint32_t color, PixelBuffer *pixelBuffer);

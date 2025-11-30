@@ -1,5 +1,6 @@
 #include <engine.h>
 #include <rasterizer.h>
+#include <time.h>
 
 Engine *engineInit(Engine *engine, int width, int height, const char *name) {
   if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
@@ -14,8 +15,7 @@ Engine *engineInit(Engine *engine, int width, int height, const char *name) {
     return 0;
   }
 
-  SDL_Renderer *renderer =
-      SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+  SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
   if (!renderer) {
     fprintf(stderr, "could not make a renderer: %s\n", SDL_GetError());
     return 0;
@@ -45,6 +45,28 @@ Engine *engineInit(Engine *engine, int width, int height, const char *name) {
   return engine;
 }
 
+#define FPS_SAMPLE_COUNT 60
+
+static double frameTimes[FPS_SAMPLE_COUNT] = {0};
+static int frameIndex = 0;
+
+struct timespec start, end;
+
+static void updateFPS(double frameTime) {
+  frameTimes[frameIndex] = frameTime;
+  frameIndex = (frameIndex + 1) % FPS_SAMPLE_COUNT;
+
+  double sum = 0;
+  for (int i = 0; i < FPS_SAMPLE_COUNT; i++) {
+    sum += frameTimes[i];
+  }
+  double avgFrameTime = sum / FPS_SAMPLE_COUNT;
+  double avgFPS = 1.0 / avgFrameTime;
+
+  printf("\rFPS: %.2f (%.2fms)", avgFPS, avgFrameTime * 1000.0);
+  fflush(stdout);
+}
+
 static void handleEvents(Engine *engine) {
   SDL_Event e;
 
@@ -53,8 +75,8 @@ static void handleEvents(Engine *engine) {
     case SDL_QUIT:
       engine->running = false;
     case SDL_KEYDOWN: {
-
-      toggleWireframeMode(engine->scene);
+      if (e.key.keysym.sym == SDLK_x)
+        toggleWireframeMode(engine->scene);
     }
     }
   }
@@ -69,19 +91,27 @@ static void render(Engine *engine) {
   SDL_RenderCopy(engine->renderer, engine->texture, NULL, NULL);
 
   SDL_RenderPresent(engine->renderer);
+
+  // SDL_Delay(10);
 }
 
 void run(Engine *engine) {
   engine->running = true;
 
   while (engine->running) {
+    clock_gettime(CLOCK_MONOTONIC, &start);
+
     handleEvents(engine);
     render(engine);
+
+    clock_gettime(CLOCK_MONOTONIC, &end);
+    double frameTime = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
+    updateFPS(frameTime);
   }
 }
 
 void updatePixels(Engine *engine) {
-  pixelsClear(&engine->pixelBuff, rgbu32(6, 7, 12, 255));
+  pixelsClear(&engine->pixelBuff);
   sceneRender(engine->scene, &engine->pixelBuff);
 }
 

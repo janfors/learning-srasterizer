@@ -13,7 +13,7 @@ typedef struct {
 BoundingBox getTriangleBoundingBox(Vec2i *v1, Vec2i *v2, Vec2i *v3);
 
 // Barycentric edge function
-static inline float edgeFunction(Vec2f *a, Vec2f *b, Vec2f *c) {
-  return (c->x - a->x) * (b->y - a->y) - (c->y - a->y) * (b->x - a->x);
+static inline float edgeFunction(Vec2f a, Vec2f b, Vec2f c) {
+  return (c.x - a.x) * (b.y - a.y) - (c.y - a.y) * (b.x - a.x);
 }
 #endif // !_TRIANGLE_H

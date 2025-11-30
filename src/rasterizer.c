@@ -2,8 +2,8 @@
 #include <rasterizer.h>
 #include <triangle.h>
 
-void pixelsClear(PixelBuffer *pixelBuffer, uint32_t color) {
-  memset(pixelBuffer->pixels, color, sizeof(uint32_t) * pixelBuffer->width * pixelBuffer->height);
+void pixelsClear(PixelBuffer *pixelBuffer) {
+  memset(pixelBuffer->pixels, 0, sizeof(uint32_t) * pixelBuffer->width * pixelBuffer->height);
 }
 
 void drawTriangleFilled(Vec2i *v1, Vec2i *v2, Vec2i *v3, uint32_t color, PixelBuffer *pixelBuffer) {
@@ -18,7 +18,7 @@ void drawTriangleFilled(Vec2i *v1, Vec2i *v2, Vec2i *v3, uint32_t color, PixelBu
   Vec2f v3f = (Vec2f){v3->x, v3->y};
 
   // Ensure the correct triangle winding
-  float area = edgeFunction(&v1f, &v2f, &v3f);
+  float area = edgeFunction(v1f, v2f, v3f);
   if (area < 0) {
     Vec2f tmp = v2f;
     v2f = v3f;
@@ -26,16 +26,26 @@ void drawTriangleFilled(Vec2i *v1, Vec2i *v2, Vec2i *v3, uint32_t color, PixelBu
     area = -area;
   }
 
-  for (int x = bounds.minX; x <= bounds.maxX; x++) {
-    for (int y = bounds.minY; y <= bounds.maxY; y++) {
-      Vec2f p = (Vec2f){x + 0.5f, y + 0.5f};
+  float dw0 = v3f.y - v2f.y;
+  float dw1 = v1f.y - v3f.y;
+  float dw2 = v2f.y - v1f.y;
 
-      float w0 = edgeFunction(&v2f, &v3f, &p);
-      float w1 = edgeFunction(&v3f, &v1f, &p);
-      float w2 = edgeFunction(&v1f, &v2f, &p);
+  for (int y = bounds.minY; y <= bounds.maxY; y++) {
+    Vec2f p = (Vec2f){bounds.minX + 0.5f, y + 0.5f};
 
+    // Calculate at the start of the scanline instead of per pixel
+    float w0 = edgeFunction(v2f, v3f, p);
+    float w1 = edgeFunction(v3f, v1f, p);
+    float w2 = edgeFunction(v1f, v2f, p);
+
+    for (int x = bounds.minX; x <= bounds.maxX; x++) {
       if (w0 >= 0 && w1 >= 0 && w2 >= 0)
         drawPixel(pixelBuffer->pixels, x, y, pixelBuffer->width, color);
+
+      // they change linearly so we can not calculate them and just offset the w values
+      w0 += dw0;
+      w1 += dw1;
+      w2 += dw2;
     }
   }
 }
