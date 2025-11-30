@@ -124,6 +124,18 @@ void drawLine(Vertex *a, Vertex *b, uint32_t color, PixelBuffer *pixelBuffer) {
     dy = tmp;
   }
 
+  if (dx == 0) {
+    // Single pixel line
+    if (x0 >= 0 && x0 < pixelBuffer->width && y0 >= 0 && y0 < pixelBuffer->height) {
+      int idx = y0 * pixelBuffer->width + x0;
+      if (z0 < pixelBuffer->depthBuffer[idx]) {
+        pixelBuffer->depthBuffer[idx] = z0;
+        pixelBuffer->pixels[idx] = color;
+      }
+    }
+    return;
+  }
+
   int x = x0;
   int y = y0;
   float dz = z1 - z0;

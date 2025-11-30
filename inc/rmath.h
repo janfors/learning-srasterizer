@@ -116,6 +116,14 @@ static inline int absi(int x) { return x >= 0 ? x : -x; }
 static inline float signf(float x) { return x > 0 ? 1.0f : x == 0 ? 0 : -1.0f; }
 static inline int signi(int x) { return x > 0 ? 1 : x == 0 ? 0 : -1; }
 
+static inline Vec3f scaleVec3f(Vec3f v, float scale) {
+  return (Vec3f){
+      v.x * scale,
+      v.y * scale,
+      v.z * scale,
+  };
+}
+
 static inline Vec3f addVec3f(Vec3f a, Vec3f b) { return (Vec3f){a.x + b.x, a.y + b.y, a.z + b.z}; }
 static inline Vec3f subVec3f(Vec3f a, Vec3f b) { return (Vec3f){a.x - b.x, a.y - b.y, a.z - b.z}; }
 static inline Vec4f addVec4f(Vec4f a, Vec4f b) {

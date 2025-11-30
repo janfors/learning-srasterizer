@@ -43,6 +43,9 @@ Engine *engineInit(Engine *engine, int width, int height, const char *name) {
   initScene(scene, 32);
   engine->scene = scene;
 
+  // INPUT INITIALIZATION
+  SDL_SetRelativeMouseMode(SDL_TRUE);
+
   return engine;
 }
 
@@ -68,19 +71,67 @@ static void updateFPS(double frameTime) {
   fflush(stdout);
 }
 
-static void handleEvents(Engine *engine) {
+static void handleMouseEvents(Camera *cam, float dx, float dy) {
+  float sens = 0.005f;
+
+  cam->yaw -= dx * sens;
+  cam->pitch -= dy * sens;
+
+  // Avoid flipping
+  if (cam->pitch > 1.57f)
+    cam->pitch = 1.57f;
+  if (cam->pitch < -1.57f)
+    cam->pitch = -1.57f;
+}
+
+static void cameraHandling(Camera *cam, const Uint8 *state, float dt) {
+  float speed = 2.5f * dt;
+
+  Vec3f forward = {
+      sinf(cam->yaw) * cosf(cam->pitch),
+      sinf(cam->pitch),
+      cosf(cam->yaw) * cosf(cam->pitch),
+  };
+  forward = normalizeVec3f(forward);
+
+  Vec3f right = normalizeVec3f(cross(forward, cam->up));
+
+  if (state[SDL_SCANCODE_W])
+    cam->eye = addVec3f(cam->eye, scaleVec3f(forward, speed));
+  if (state[SDL_SCANCODE_S])
+    cam->eye = subVec3f(cam->eye, scaleVec3f(forward, speed));
+  if (state[SDL_SCANCODE_A])
+    cam->eye = subVec3f(cam->eye, scaleVec3f(right, speed));
+  if (state[SDL_SCANCODE_D])
+    cam->eye = addVec3f(cam->eye, scaleVec3f(right, speed));
+}
+
+static void handleEvents(Engine *engine, float dt) {
   SDL_Event e;
 
   while (SDL_PollEvent(&e) != 0) {
     switch (e.type) {
     case SDL_QUIT:
       engine->running = false;
+      break;
     case SDL_KEYDOWN: {
       if (e.key.keysym.sym == SDLK_x)
         toggleWireframeMode(engine->scene);
+      break;
+    case SDL_MOUSEMOTION:
+      handleMouseEvents(&engine->scene->camera, e.motion.xrel, e.motion.yrel);
+      break;
     }
     }
   }
+
+  const Uint8 *state = SDL_GetKeyboardState(NULL);
+  cameraHandling(&engine->scene->camera, state, dt);
+
+  updateCameraView(&engine->scene->camera);
+
+  // DEBUG:
+  // debugCameraOutput(&engine->scene->camera);
 }
 
 static void render(Engine *engine) {
@@ -99,10 +150,15 @@ static void render(Engine *engine) {
 void run(Engine *engine) {
   engine->running = true;
 
+  Uint32 lastTicks = SDL_GetTicks();
   while (engine->running) {
+    Uint32 currTicks = SDL_GetTicks();
+    float dt = (currTicks - lastTicks) / 1000.0f;
+    lastTicks = currTicks;
+
     clock_gettime(CLOCK_MONOTONIC, &start);
 
-    handleEvents(engine);
+    handleEvents(engine, dt);
     render(engine);
     clock_gettime(CLOCK_MONOTONIC, &end);
 
