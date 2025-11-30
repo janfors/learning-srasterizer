@@ -9,7 +9,7 @@
 #include <stdint.h>
 
 typedef struct {
-  Mesh *meshes;
+  Mesh **meshes;
   size_t count, capacity;
 
   Camera camera;
@@ -22,7 +22,7 @@ static inline void toggleWireframeMode(Scene *scene) {
 }
 
 // Add a new mesh to the scene
-void sceneAddMesh(Scene *scene, Mesh mesh);
+void sceneAddMesh(Scene *scene, Mesh *mesh);
 // remove the mesh at idx
 void sceneRemoveMesh(Scene *scene, size_t idx);
 

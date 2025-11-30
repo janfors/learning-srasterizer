@@ -1,7 +1,7 @@
 #include <engine.h>
 
 static void sceneSetup(Engine *engine) {
-  engine->scene->camera = initCamera((Vec3f){0, 0, 3}, // position
+  engine->scene->camera = initCamera((Vec3f){0, 0, 3}, // eye
                                      (Vec3f){0, 0, 0}, // target
                                      (Vec3f){0, 1, 0}, // up
                                      M_PI / 3.0f,      // fov 60 deg
@@ -11,12 +11,12 @@ static void sceneSetup(Engine *engine) {
 
   Mesh *mesh = initMesh(0xFF00FFFF, 3, 3);
 
-  addVertex(mesh, newVertex(0, 1, 0));
-  addVertex(mesh, newVertex(-1, -1, 0));
-  addVertex(mesh, newVertex(1, -1, 0));
+  addVertex(mesh, newVertex(0, 0.5f, -4.9f));
+  addVertex(mesh, newVertex(-0.5f, -0.5f, -3.9f));
+  addVertex(mesh, newVertex(0.5f, -0.5f, -4.9f));
   addTriangle(mesh, 0, 1, 2);
 
-  sceneAddMesh(engine->scene, *mesh);
+  sceneAddMesh(engine->scene, mesh);
 }
 
 int main() {

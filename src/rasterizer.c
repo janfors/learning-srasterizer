@@ -17,10 +17,6 @@ void drawTriangleFilled(Vertex *v1, Vertex *v2, Vertex *v3, uint32_t color,
   Vec3f v2Screen = {v2->screenX, v2->screenY, v2->depth};
   Vec3f v3Screen = {v3->screenX, v3->screenY, v3->depth};
 
-  // DEBUG
-  printf("Triangle: (%f, %f, %f)\n", v1->screenX, v1->screenY, v1->depth);
-  fflush(stdout);
-
   BoundingBox bounds = getTriangleBoundingBox(v1->screenX, v1->screenY, v2->screenX, v2->screenY,
                                               v3->screenX, v3->screenY);
   bounds.minX = maxi(0, bounds.minX);

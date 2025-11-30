@@ -7,26 +7,26 @@
 // to be used when count == capacity
 static void growArray(Scene *scene) {
   size_t newCapacity = scene->capacity * 2;
-  scene->meshes = realloc(scene->meshes, newCapacity * sizeof(Mesh));
+  scene->meshes = realloc(scene->meshes, newCapacity * sizeof(Mesh *));
   scene->capacity = newCapacity;
 }
 
 // to be called when used memory == capacity / 2
 static void shrinkArray(Scene *scene) {
   size_t newCapacity = scene->capacity / 2;
-  scene->meshes = realloc(scene->meshes, newCapacity * sizeof(Mesh));
+  scene->meshes = realloc(scene->meshes, newCapacity * sizeof(Mesh *));
   scene->capacity = newCapacity;
 }
 
 void initScene(Scene *scene, size_t initialCapacity) {
-  scene->meshes = malloc(sizeof(Mesh) * initialCapacity);
+  scene->meshes = malloc(sizeof(Mesh *) * initialCapacity);
   scene->count = 0;
   scene->capacity = initialCapacity;
 
   scene->wireframeMode = false;
 }
 
-void sceneAddMesh(Scene *scene, Mesh mesh) {
+void sceneAddMesh(Scene *scene, Mesh *mesh) {
   if (scene->count + 1 >= scene->capacity)
     growArray(scene);
 
@@ -62,7 +62,7 @@ static void renderMesh(Mesh *mesh, PixelBuffer *pixelBuffer, bool wireframeMode)
 void sceneRender(Scene *scene, PixelBuffer *pixelBuffer) {
   for (int i = 0; i < scene->count; i++) {
     Mat4f mvp = mat4fMul(scene->camera.projection, scene->camera.view);
-    Mesh *transformed = transformMesh(&scene->meshes[i], mvp, pixelBuffer);
+    Mesh *transformed = transformMesh(scene->meshes[i], mvp, pixelBuffer);
     renderMesh(transformed, pixelBuffer, scene->wireframeMode);
     freeMesh(transformed);
   }
@@ -70,7 +70,7 @@ void sceneRender(Scene *scene, PixelBuffer *pixelBuffer) {
 
 void sceneDeinit(Scene *scene) {
   for (int i = 0; i < scene->count; i++) {
-    freeMesh(&scene->meshes[i]);
+    freeMesh(scene->meshes[i]);
   }
 
   free(scene->meshes);
