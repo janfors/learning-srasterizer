@@ -113,9 +113,11 @@ void run(Engine *engine) {
 
 void updatePixels(Engine *engine) {
   pixelsClear(&engine->pixelBuff);
+  // pixelsClearColor(&engine->pixelBuff, rgbu32(6, 8, 10, 255));
 
+  // clear the depth buffer
   for (int i = 0; i < engine->width * engine->height; i++)
-    engine->pixelBuff.depthBuffer[i] = 1e10;
+    engine->pixelBuff.depthBuffer[i] = 1.0f;
 
   sceneRender(engine->scene, &engine->pixelBuff);
 }

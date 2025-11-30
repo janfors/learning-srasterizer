@@ -6,20 +6,35 @@ void pixelsClear(PixelBuffer *pixelBuffer) {
   memset(pixelBuffer->pixels, 0, sizeof(uint32_t) * pixelBuffer->width * pixelBuffer->height);
 }
 
-void drawTriangleFilled(Vec3f *v1, Vec3f *v2, Vec3f *v3, uint32_t color, PixelBuffer *pixelBuffer) {
-  BoundingBox bounds = getTriangleBoundingBox(v1, v2, v3);
+void pixelsClearColor(PixelBuffer *pixelBuffer, uint32_t color) {
+  for (int i = 0; i < pixelBuffer->width * pixelBuffer->height; i++)
+    pixelBuffer->pixels[i] = color;
+}
+
+void drawTriangleFilled(Vertex *v1, Vertex *v2, Vertex *v3, uint32_t color,
+                        PixelBuffer *pixelBuffer) {
+  Vec3f v1Screen = {v1->screenX, v1->screenY, v1->depth};
+  Vec3f v2Screen = {v2->screenX, v2->screenY, v2->depth};
+  Vec3f v3Screen = {v3->screenX, v3->screenY, v3->depth};
+
+  // DEBUG
+  printf("Triangle: (%f, %f, %f)\n", v1->screenX, v1->screenY, v1->depth);
+  fflush(stdout);
+
+  BoundingBox bounds = getTriangleBoundingBox(v1->screenX, v1->screenY, v2->screenX, v2->screenY,
+                                              v3->screenX, v3->screenY);
   bounds.minX = maxi(0, bounds.minX);
   bounds.minY = maxi(0, bounds.minY);
   bounds.maxX = mini(pixelBuffer->width - 1, bounds.maxX);
   bounds.maxY = mini(pixelBuffer->height - 1, bounds.maxY);
 
-  Vec2f v1f = (Vec2f){v1->x, v1->y};
-  Vec2f v2f = (Vec2f){v2->x, v2->y};
-  Vec2f v3f = (Vec2f){v3->x, v3->y};
+  Vec2f v1f = (Vec2f){v1Screen.x, v1Screen.y};
+  Vec2f v2f = (Vec2f){v2Screen.x, v2Screen.y};
+  Vec2f v3f = (Vec2f){v3Screen.x, v3Screen.y};
 
-  float z1 = v1->z;
-  float z2 = v2->z;
-  float z3 = v3->z;
+  float z1 = v1Screen.z;
+  float z2 = v2Screen.z;
+  float z3 = v3Screen.z;
 
   // Ensure the correct triangle winding
   float area = edgeFunction(v1f, v2f, v3f);
@@ -85,55 +100,44 @@ void drawTriangleFilled(Vec3f *v1, Vec3f *v2, Vec3f *v3, uint32_t color, PixelBu
   }
 }
 
-void drawTriangleWireframe(Vec3f *v1, Vec3f *v2, Vec3f *v3, uint32_t color,
+void drawTriangleWireframe(Vertex *v1, Vertex *v2, Vertex *v3, uint32_t color,
                            PixelBuffer *pixelBuffer) {
   drawLine(v1, v2, color, pixelBuffer);
   drawLine(v2, v3, color, pixelBuffer);
   drawLine(v3, v1, color, pixelBuffer);
 }
 
-void drawLine(Vec3f *a, Vec3f *b, uint32_t color, PixelBuffer *pixelBuffer) {
-  if ((a->x < 0 && b->x < 0) || (a->x >= pixelBuffer->width && b->x >= pixelBuffer->width))
-    return;
-  if ((a->y < 0 && b->y < 0) || (a->y >= pixelBuffer->height && b->y >= pixelBuffer->height))
-    return;
+void drawLine(Vertex *a, Vertex *b, uint32_t color, PixelBuffer *pixelBuffer) {
+  int x0 = (int)a->screenX;
+  int y0 = (int)a->screenY;
+  int x1 = (int)b->screenX;
+  int y1 = (int)b->screenY;
 
-  int x = (int)a->x;
-  int y = (int)a->y;
+  float z0 = a->depth;
+  float z1 = b->depth;
 
-  int dx = (int)absf(b->x - a->x);
-  int dy = (int)absf(b->y - a->y);
-  float dz = b->z - a->z;
-
-  int signx = (int)signf(b->x - a->x);
-  int signy = (int)signf(b->y - a->y);
+  int dx = absi(x1 - x0);
+  int dy = absi(y1 - y0);
+  int signx = signi(x1 - x0);
+  int signy = signi(y1 - y0);
 
   bool steep = dy > dx;
   if (steep) {
-    float tmp = dx;
+    int tmp = dx;
     dx = dy;
     dy = tmp;
   }
 
-  if (dx == 0) {
-    if (x >= 0 && x < pixelBuffer->width && y >= 0 && y < pixelBuffer->height) {
-      int idx = y * pixelBuffer->width + x;
-      if (a->z < pixelBuffer->depthBuffer[idx]) {
-        pixelBuffer->depthBuffer[idx] = a->z;
-        pixelBuffer->pixels[idx] = color;
-      }
-    }
-
-    return;
-  }
-
+  int x = x0;
+  int y = y0;
+  float dz = z1 - z0;
   float t = 0.0f;
-  float dt = 1.0f / (float)dx;
+  float dt = (dx != 0) ? 1.0f / (float)dx : 0.0f;
 
-  float e = 2 * dy - dx;
+  int e = 2 * dy - dx;
   for (int i = 0; i <= dx; i++) {
     if (x >= 0 && x < pixelBuffer->width && y >= 0 && y < pixelBuffer->height) {
-      float z = a->z + t * dz;
+      float z = z0 + t * dz;
       int idx = y * pixelBuffer->width + x;
       if (z < pixelBuffer->depthBuffer[idx]) {
         pixelBuffer->depthBuffer[idx] = z;
@@ -156,5 +160,6 @@ void drawLine(Vec3f *a, Vec3f *b, uint32_t color, PixelBuffer *pixelBuffer) {
       x += signx;
 
     e += 2 * dy;
+    t += dt;
   }
 }

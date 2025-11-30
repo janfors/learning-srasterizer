@@ -1,16 +1,24 @@
 cmake_minimum_required(VERSION 3.16)
 set(CMAKE_EXPORT_COMPILE_COMMANDS on)
-# set(CMAKE_BUILD_TYPE Debug)
-set(CMAKE_BUILD_TYPE RELEASE)
+set(CMAKE_BUILD_TYPE Debug)
+# set(CMAKE_BUILD_TYPE RELEASE)
 
 project(SoftwareRasterizer C)
 
 find_package(SDL2 REQUIRED)
 
-set(SRCS src/main.c src/engine.c src/rasterizer.c src/math.c src/triangle.c
-         src/scene.c)
+set(SRCS
+    src/main.c
+    src/engine.c
+    src/rasterizer.c
+    src/rmath.c
+    src/triangle.c
+    src/scene.c
+    src/camera.c
+    src/mesh.c
+    src/transform.c)
 
 add_executable(app ${SRCS})
 
 target_include_directories(app PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/inc)
-target_link_libraries(app PRIVATE SDL2::SDL2)
+target_link_libraries(app PRIVATE SDL2::SDL2 m)

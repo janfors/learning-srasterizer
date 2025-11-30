@@ -1,8 +1,7 @@
 #ifndef _TRIANGLE_H
 #define _TRIANGLE_H
 
-#include <engine.h>
-#include <math.h>
+#include <rmath.h>
 
 typedef struct {
   int minX, maxX;
@@ -10,7 +9,7 @@ typedef struct {
 } BoundingBox;
 
 // calculate the bounding box of a triangle defined in screen space
-BoundingBox getTriangleBoundingBox(Vec3f *v1, Vec3f *v2, Vec3f *v3);
+BoundingBox getTriangleBoundingBox(int x1, int y1, int x2, int y2, int x3, int y3);
 
 // Barycentric edge function
 static inline float edgeFunction(Vec2f a, Vec2f b, Vec2f c) {

@@ -7,14 +7,14 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "SDL2::SDL2::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-SDL2__SDL2-RELEASE-6c4e0247574373c5ba11.json",
+					"jsonFile" : "target-SDL2__SDL2-Debug-6c4e0247574373c5ba11.json",
 					"name" : "SDL2::SDL2",
 					"projectIndex" : 0
 				},
 				{
 					"directoryIndex" : 0,
 					"id" : "SDL2::SDL2main::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-SDL2__SDL2main-RELEASE-37bbb2dcd99b60335f8f.json",
+					"jsonFile" : "target-SDL2__SDL2main-Debug-37bbb2dcd99b60335f8f.json",
 					"name" : "SDL2::SDL2main",
 					"projectIndex" : 0
 				}
@@ -28,7 +28,7 @@
 						1
 					],
 					"build" : ".",
-					"jsonFile" : "directory-.-RELEASE-9ad1a58d4644cf6543fa.json",
+					"jsonFile" : "directory-.-Debug-9ad1a58d4644cf6543fa.json",
 					"minimumCMakeVersion" : 
 					{
 						"string" : "3.16"
@@ -41,7 +41,7 @@
 					]
 				}
 			],
-			"name" : "RELEASE",
+			"name" : "Debug",
 			"projects" : 
 			[
 				{
@@ -66,7 +66,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "app::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-app-RELEASE-9b24d6239eda0f4e530f.json",
+					"jsonFile" : "target-app-Debug-a34c78ba596fd7a063b6.json",
 					"name" : "app",
 					"projectIndex" : 0
 				}
