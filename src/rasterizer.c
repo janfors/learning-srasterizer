@@ -3,7 +3,7 @@
 #include <triangle.h>
 
 void pixelsClear(PixelBuffer *pixelBuffer) {
-  memset(pixelBuffer->pixels, 0, sizeof(uint32_t) * pixelBuffer->width * pixelBuffer->height);
+  memset(pixelBuffer->pixels, 0x06, sizeof(uint32_t) * pixelBuffer->width * pixelBuffer->height);
 }
 
 void pixelsClearColor(PixelBuffer *pixelBuffer, uint32_t color) {

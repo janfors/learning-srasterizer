@@ -26,8 +26,8 @@ Mesh *transformMeshToClipSpace(Mesh *mesh, Mat4f mvp, PixelBuffer *pixelBuffer) 
 }
 
 int clipTriangleAllPlanes(Vertex tri[3], Vertex *out, PixelBuffer *pixelBuffer) {
-  Vertex tmpA[8];
-  Vertex tmpB[8];
+  Vertex tmpA[9];
+  Vertex tmpB[9];
 
   int n = 3;
   memcpy(tmpA, tri, sizeof(Vertex) * 3);

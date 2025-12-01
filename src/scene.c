@@ -35,7 +35,7 @@ void sceneAddMesh(Scene *scene, Mesh *mesh) {
 
 void sceneRemoveMesh(Scene *scene, size_t idx) {
   if (idx < 0 || idx >= scene->count) {
-    fprintf(stderr, "Tried removing a triangle outside of the bounds of the triangle array!\n");
+    fprintf(stderr, "Tried removing a mesh outside of the bounds of the mesh array!\n");
     return;
   }
 
@@ -55,12 +55,12 @@ static void renderMesh(Scene *scene, Mesh *mesh, PixelBuffer *pixelBuffer, bool 
         mesh->vertices[mesh->indices[i + 2]],
     };
 
-    Vertex clipped[6];
+    Vertex clipped[9]; // should be 6 but breaks otherwise???
     int n = clipTriangleAllPlanes(tri, clipped, pixelBuffer);
     if (n < 3)
       continue;
 
-    for (int j = 0; j < n - 1; j++) {
+    for (int j = 1; j < n - 1; j++) {
       if (wireframeMode)
         drawTriangleWireframe(&clipped[0], &clipped[j], &clipped[j + 1], mesh->color, pixelBuffer);
       else
