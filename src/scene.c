@@ -59,10 +59,19 @@ static void renderMesh(Mesh *mesh, PixelBuffer *pixelBuffer, bool wireframeMode)
   }
 }
 
+static void meshClip(Mesh *mesh) {
+  // HELP
+  //
+}
+
 void sceneRender(Scene *scene, PixelBuffer *pixelBuffer) {
   for (int i = 0; i < scene->count; i++) {
     Mat4f mvp = mat4fMul(scene->camera.projection, scene->camera.view);
     Mesh *transformed = transformMesh(scene->meshes[i], mvp, pixelBuffer);
+
+    // MAN
+    // MAN
+
     renderMesh(transformed, pixelBuffer, scene->wireframeMode);
     freeMesh(transformed);
   }

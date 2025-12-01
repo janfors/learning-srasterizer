@@ -40,3 +40,49 @@ Mesh *transformMesh(Mesh *mesh, Mat4f mvp, PixelBuffer *pixelBuffer) {
 
   return out;
 }
+
+int clipPolygonPlane(Vertex *in, int inCount, Vertex *out, float (*insideTest)(Vec4f),
+                     Vec4f (*intersect)(Vec4f, Vec4f)) {
+  int outCount = 0;
+
+  for (int i = 0; i < inCount; i++) {
+    Vertex curr = in[i];
+    Vertex next = in[(i + 1) % inCount];
+
+    float currW = 1.0f / curr.invW;
+    float nextW = 1.0f / next.invW;
+
+    bool currInside = insideTest((Vec4f){curr.pos.x, curr.pos.y, curr.pos.z, currW});
+    bool nextInside = insideTest((Vec4f){next.pos.x, next.pos.y, next.pos.z, nextW});
+
+    if (currInside && nextInside) {
+      out[outCount++] = next;
+    } else if (currInside && !nextInside) {
+      Vec4f outVec = intersect((Vec4f){curr.pos.x, curr.pos.y, curr.pos.z, currW},
+                               (Vec4f){next.pos.x, next.pos.y, next.pos.z, nextW});
+
+      float inwW = 1.0f / outVec.w;
+
+      out[outCount++] = (Vertex){.pos = {outVec.x, outVec.y, outVec.z},
+                                 .screenX = 0,
+                                 .screenY = 0,
+                                 .depth = 0,
+                                 .invW = inwW};
+    } else if (!currInside && nextInside) {
+      Vec4f outVec = intersect((Vec4f){curr.pos.x, curr.pos.y, curr.pos.z, currW},
+                               (Vec4f){next.pos.x, next.pos.y, next.pos.z, nextW});
+
+      float inwW = 1.0f / outVec.w;
+
+      out[outCount++] = (Vertex){.pos = {outVec.x, outVec.y, outVec.z},
+                                 .screenX = 0,
+                                 .screenY = 0,
+                                 .depth = 0,
+                                 .invW = inwW};
+
+      out[outCount++] = next;
+    }
+  }
+
+  return outCount;
+}

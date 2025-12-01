@@ -128,6 +128,16 @@ static inline Vec4f addVec4f(Vec4f a, Vec4f b) {
   return (Vec4f){a.x + b.x, a.y + b.y, a.z + b.z, a.w + b.w};
 }
 
+static inline Vec4f lerpVec4f(const Vec4f *restrict a, const Vec4f *restrict b, float t) {
+  Vec4f res;
+  res.x = a->x * (1.0f - t) + b->x * t;
+  res.y = a->y * (1.0f - t) + b->y * t;
+  res.z = a->z * (1.0f - t) + b->z * t;
+  res.w = a->w * (1.0f - t) + b->w * t;
+
+  return res;
+}
+
 // Returns the dot product of a and b
 static inline float dot(Vec3f a, Vec3f b) { return a.x * b.x + a.y * b.y + a.z * b.z; }
 // Returns the cross product of a and b
