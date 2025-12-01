@@ -13,10 +13,6 @@ void pixelsClearColor(PixelBuffer *pixelBuffer, uint32_t color) {
 
 void drawTriangleFilled(Vertex *v1, Vertex *v2, Vertex *v3, uint32_t color,
                         PixelBuffer *pixelBuffer) {
-  Vec3f v1Screen = {v1->screenX, v1->screenY, v1->depth};
-  Vec3f v2Screen = {v2->screenX, v2->screenY, v2->depth};
-  Vec3f v3Screen = {v3->screenX, v3->screenY, v3->depth};
-
   BoundingBox bounds = getTriangleBoundingBox(v1->screenX, v1->screenY, v2->screenX, v2->screenY,
                                               v3->screenX, v3->screenY);
   bounds.minX = maxi(0, bounds.minX);
@@ -24,13 +20,13 @@ void drawTriangleFilled(Vertex *v1, Vertex *v2, Vertex *v3, uint32_t color,
   bounds.maxX = mini(pixelBuffer->width - 1, bounds.maxX);
   bounds.maxY = mini(pixelBuffer->height - 1, bounds.maxY);
 
-  Vec2f v1f = (Vec2f){v1Screen.x, v1Screen.y};
-  Vec2f v2f = (Vec2f){v2Screen.x, v2Screen.y};
-  Vec2f v3f = (Vec2f){v3Screen.x, v3Screen.y};
+  Vec2f v1f = (Vec2f){v1->screenX, v1->screenY};
+  Vec2f v2f = (Vec2f){v2->screenX, v2->screenY};
+  Vec2f v3f = (Vec2f){v3->screenX, v3->screenY};
 
-  float z1 = v1Screen.z;
-  float z2 = v2Screen.z;
-  float z3 = v3Screen.z;
+  float z1 = v1->depth;
+  float z2 = v2->depth;
+  float z3 = v3->depth;
 
   float invW1 = v1->invW;
   float invW2 = v2->invW;
@@ -153,7 +149,9 @@ void drawLine(Vertex *a, Vertex *b, uint32_t color, PixelBuffer *pixelBuffer) {
 
   for (int x = x0; x <= x1; x++) {
     float t = dx == 0 ? 0.0f : (float)(x - x0) / dx;
-    float z = z0 + t * (z1 - z0);
+    // perspective corectness...
+    float invWInterp = (1.0f / a->invW) * (1 - t) + (1.0f / b->invW) * t;
+    float z = ((1 - t) * z0 * (1.0f / a->invW) + t * z1 * (1.0f / b->invW)) / invWInterp;
 
     int drawX = steep ? y : x;
     int drawY = steep ? x : y;

@@ -46,33 +46,35 @@ void sceneRemoveMesh(Scene *scene, size_t idx) {
     shrinkArray(scene);
 }
 
-static void renderMesh(Mesh *mesh, PixelBuffer *pixelBuffer, bool wireframeMode) {
+// this really should be in mesh.h
+static void renderMesh(Scene *scene, Mesh *mesh, PixelBuffer *pixelBuffer, bool wireframeMode) {
   for (int i = 0; i < mesh->indexCount; i += 3) {
-    Vertex *v0 = &mesh->vertices[mesh->indices[i]];
-    Vertex *v1 = &mesh->vertices[mesh->indices[i + 1]];
-    Vertex *v2 = &mesh->vertices[mesh->indices[i + 2]];
+    Vertex tri[3] = {
+        mesh->vertices[mesh->indices[i]],
+        mesh->vertices[mesh->indices[i + 1]],
+        mesh->vertices[mesh->indices[i + 2]],
+    };
 
-    if (wireframeMode)
-      drawTriangleWireframe(v0, v1, v2, mesh->color, pixelBuffer);
-    else
-      drawTriangleFilled(v0, v1, v2, mesh->color, pixelBuffer);
+    Vertex clipped[6];
+    int n = clipTriangleAllPlanes(tri, clipped, pixelBuffer);
+    if (n < 3)
+      continue;
+
+    for (int j = 0; j < n - 1; j++) {
+      if (wireframeMode)
+        drawTriangleWireframe(&clipped[0], &clipped[j], &clipped[j + 1], mesh->color, pixelBuffer);
+      else
+        drawTriangleFilled(&clipped[0], &clipped[j], &clipped[j + 1], mesh->color, pixelBuffer);
+    }
   }
-}
-
-static void meshClip(Mesh *mesh) {
-  // HELP
-  //
 }
 
 void sceneRender(Scene *scene, PixelBuffer *pixelBuffer) {
   for (int i = 0; i < scene->count; i++) {
     Mat4f mvp = mat4fMul(scene->camera.projection, scene->camera.view);
-    Mesh *transformed = transformMesh(scene->meshes[i], mvp, pixelBuffer);
+    Mesh *transformed = transformMeshToClipSpace(scene->meshes[i], mvp, pixelBuffer);
 
-    // MAN
-    // MAN
-
-    renderMesh(transformed, pixelBuffer, scene->wireframeMode);
+    renderMesh(scene, transformed, pixelBuffer, scene->wireframeMode);
     freeMesh(transformed);
   }
 }

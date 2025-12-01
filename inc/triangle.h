@@ -14,7 +14,8 @@ typedef struct {
 BoundingBox getTriangleBoundingBox(int x1, int y1, int x2, int y2, int x3, int y3);
 
 // clip a triangle against the near plane ( z >= -w)
-int clipTriangleNear(Vertex in[3], Vertex out[4], PixelBuffer *pixelBuffer);
+// UNUSED (I'll keep it for now)
+// int clipTriangleNear(Vertex in[3], Vertex out[4], PixelBuffer *pixelBuffer);
 
 // Barycentric edge function
 static inline float edgeFunction(Vec2f a, Vec2f b, Vec2f c) {

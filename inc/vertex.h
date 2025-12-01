@@ -5,6 +5,7 @@
 
 typedef struct {
   Vec3f pos;
+  Vec4f clip;
   float screenX;
   float screenY;
   float depth;
@@ -18,6 +19,7 @@ static inline Vertex newVertex(float x, float y, float z) {
       .screenY = 0,
       .depth = 0,
       .invW = 0,
+      .clip = {0, 0, 0, 0},
   };
 }
 
