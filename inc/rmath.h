@@ -84,12 +84,10 @@ static inline Mat4f mat4fRotZ(float angle) {
 static inline Mat4f mat4fProjection(float fov, float aspect, float znear, float zfar) {
   float f = 1.0f / tanf(fov * 0.5f);
 
-  return (Mat4f){{
-      {f / aspect, 0, 0, 0},
-      {0, f, 0, 0},
-      {0, 0, -(zfar + znear) / (zfar - znear), -(2 * zfar * znear) / (zfar - znear)},
-      {0, 0, -1, 0},
-  }};
+  return (Mat4f){{{f / aspect, 0, 0, 0},
+                  {0, f, 0, 0},
+                  {0, 0, -(zfar + znear) / (zfar - znear), -(2.0f * zfar * znear) / (zfar - znear)},
+                  {0, 0, -1.0f, 0}}};
 }
 
 static inline Vec4f mat4fMulVec4f(Mat4f m, Vec4f v) {

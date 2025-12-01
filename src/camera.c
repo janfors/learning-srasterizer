@@ -23,9 +23,9 @@ Camera initCamera(Vec3f eye, Vec3f target, Vec3f up, float fov, float aspect, fl
 
 void updateCameraView(Camera *cam) {
   Vec3f forward = {
-      sinf(cam->yaw) * cosf(cam->pitch),
+      cosf(cam->pitch) * sinf(cam->yaw),
       sinf(cam->pitch),
-      cosf(cam->yaw) * cosf(cam->pitch),
+      -cosf(cam->pitch) * cosf(cam->yaw),
   };
   forward = normalizeVec3f(forward);
 

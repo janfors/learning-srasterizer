@@ -75,7 +75,7 @@ static void handleMouseEvents(Camera *cam, float dx, float dy) {
   float sens = 0.005f;
 
   cam->yaw += dx * sens;
-  cam->pitch += dy * sens;
+  cam->pitch -= dy * sens;
 
   // Avoid flipping
   if (cam->pitch > 1.57f)
@@ -88,18 +88,18 @@ static void cameraHandling(Camera *cam, const Uint8 *state, float dt) {
   float speed = 2.5f * dt;
 
   Vec3f forward = {
-      sinf(cam->yaw) * cosf(cam->pitch),
+      cosf(cam->pitch) * sinf(cam->yaw),
       sinf(cam->pitch),
-      cosf(cam->yaw) * cosf(cam->pitch),
+      -cosf(cam->pitch) * cosf(cam->yaw),
   };
   forward = normalizeVec3f(forward);
 
   Vec3f right = normalizeVec3f(cross(forward, worldUp));
-  cam->up = normalizeVec3f(cross(forward, right));
+  cam->up = normalizeVec3f(cross(right, forward));
 
-  if (state[SDL_SCANCODE_S])
-    cam->eye = addVec3f(cam->eye, scaleVec3f(forward, speed));
   if (state[SDL_SCANCODE_W])
+    cam->eye = addVec3f(cam->eye, scaleVec3f(forward, speed));
+  if (state[SDL_SCANCODE_S])
     cam->eye = subVec3f(cam->eye, scaleVec3f(forward, speed));
   if (state[SDL_SCANCODE_A])
     cam->eye = subVec3f(cam->eye, scaleVec3f(right, speed));

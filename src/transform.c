@@ -14,6 +14,10 @@ Mesh *transformMesh(Mesh *mesh, Mat4f mvp, PixelBuffer *pixelBuffer) {
       fprintf(stderr, "Warning: clip.w near zero for vertex %d\n", i);
       clip.w = 1e-6f;
     }
+    // Gonna add some hack in culling (actually this is sort of worse)
+    // if (clip.x < -clip.w || clip.x > clip.w || clip.y < -clip.w || clip.y > clip.w ||
+    //     clip.z < -clip.w || clip.z > clip.w)
+    //   continue;
 
     float invW = 1.0f / clip.w;
     Vec3f ndc = {clip.x * invW, clip.y * invW, clip.z * invW};

@@ -85,7 +85,7 @@ void drawTriangleFilled(Vertex *v1, Vertex *v2, Vertex *v3, uint32_t color,
         float bw2 = w2 * invArea;
 
         float invWInterp = bw0 * invW1 + bw1 * invW2 + bw2 * invW3;
-        float z = (bw0 * z1 * invW1 + bw1 * z2 * invW3 + bw2 * z3 * invW3);
+        float z = (bw0 * z1 * invW1 + bw1 * z2 * invW2 + bw2 * z3 * invW3) / invWInterp;
 
         int idx = y * pixelBuffer->width + x;
         if (z < pixelBuffer->depthBuffer[idx]) {
@@ -112,10 +112,6 @@ void drawTriangleWireframe(Vertex *v1, Vertex *v2, Vertex *v3, uint32_t color,
   drawLine(v3, v1, color, pixelBuffer);
 }
 
-// Even after rewriting this a couple of times it inexplicably borke...
-// So far the only fix I found is disabling the depthBuffer check
-// This may introduce some visual artifacts but it makes it work...
-// It's 2 am again
 void drawLine(Vertex *a, Vertex *b, uint32_t color, PixelBuffer *pixelBuffer) {
   int x0 = (int)roundf(a->screenX);
   int y0 = (int)roundf(a->screenY);
@@ -164,10 +160,10 @@ void drawLine(Vertex *a, Vertex *b, uint32_t color, PixelBuffer *pixelBuffer) {
 
     if (drawX >= 0 && drawX < pixelBuffer->width && drawY >= 0 && drawY < pixelBuffer->height) {
       int idx = drawY * pixelBuffer->width + drawX;
-      // if (z < pixelBuffer->depthBuffer[idx]) {
-      pixelBuffer->depthBuffer[idx] = z;
-      pixelBuffer->pixels[idx] = color;
-      // }
+      if (z < pixelBuffer->depthBuffer[idx]) {
+        pixelBuffer->depthBuffer[idx] = z;
+        pixelBuffer->pixels[idx] = color;
+      }
     }
 
     error -= dy;
