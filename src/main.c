@@ -37,10 +37,10 @@ static Mesh *createTestCube() {
 }
 
 static void sceneSetup(Engine *engine) {
-  engine->scene->camera = initCamera((Vec3f){0, 0, 3}, // eye
-                                     (Vec3f){0, 0, 0}, // target
-                                     (Vec3f){0, 1, 0}, // up
-                                     M_PI / 2.0f,      // fov 60 deg
+  engine->scene->camera = initCamera((Vec3f){0, 0, 3},  // eye
+                                     (Vec3f){0, 0, -5}, // target
+                                     (Vec3f){0, 1, 0},  // up
+                                     M_PI / 2.0f,       // fov 90 deg
                                      (float)engine->pixelBuff.width / engine->pixelBuff.height,
                                      0.1f, // near
                                      100.0f);

@@ -32,6 +32,10 @@ void drawTriangleFilled(Vertex *v1, Vertex *v2, Vertex *v3, uint32_t color,
   float z2 = v2Screen.z;
   float z3 = v3Screen.z;
 
+  float invW1 = v1->invW;
+  float invW2 = v2->invW;
+  float invW3 = v3->invW;
+
   // Ensure the correct triangle winding
   float area = edgeFunction(v1f, v2f, v3f);
   if (area < 0) {
@@ -42,6 +46,10 @@ void drawTriangleFilled(Vertex *v1, Vertex *v2, Vertex *v3, uint32_t color,
     float tmpz = z2;
     z2 = z3;
     z3 = tmpz;
+
+    float tmpInvW = invW2;
+    invW2 = invW3;
+    invW3 = tmpInvW;
 
     area = -area;
   }
@@ -76,9 +84,10 @@ void drawTriangleFilled(Vertex *v1, Vertex *v2, Vertex *v3, uint32_t color,
         float bw1 = w1 * invArea;
         float bw2 = w2 * invArea;
 
-        float z = bw0 * z1 + bw1 * z2 + bw2 * z3;
-        int idx = y * pixelBuffer->width + x;
+        float invWInterp = bw0 * invW1 + bw1 * invW2 + bw2 * invW3;
+        float z = (bw0 * z1 * invW1 + bw1 * z2 * invW3 + bw2 * z3 * invW3);
 
+        int idx = y * pixelBuffer->width + x;
         if (z < pixelBuffer->depthBuffer[idx]) {
           pixelBuffer->depthBuffer[idx] = z;
           pixelBuffer->pixels[idx] = color;
@@ -103,71 +112,68 @@ void drawTriangleWireframe(Vertex *v1, Vertex *v2, Vertex *v3, uint32_t color,
   drawLine(v3, v1, color, pixelBuffer);
 }
 
+// Even after rewriting this a couple of times it inexplicably borke...
+// So far the only fix I found is disabling the depthBuffer check
+// This may introduce some visual artifacts but it makes it work...
+// It's 2 am again
 void drawLine(Vertex *a, Vertex *b, uint32_t color, PixelBuffer *pixelBuffer) {
-  int x0 = (int)a->screenX;
-  int y0 = (int)a->screenY;
-  int x1 = (int)b->screenX;
-  int y1 = (int)b->screenY;
+  int x0 = (int)roundf(a->screenX);
+  int y0 = (int)roundf(a->screenY);
+  int x1 = (int)roundf(b->screenX);
+  int y1 = (int)roundf(b->screenY);
 
   float z0 = a->depth;
   float z1 = b->depth;
 
-  int dx = absi(x1 - x0);
-  int dy = absi(y1 - y0);
-  int signx = signi(x1 - x0);
-  int signy = signi(y1 - y0);
-
-  bool steep = dy > dx;
+  bool steep = abs(y1 - y0) > abs(x1 - x0);
   if (steep) {
-    int tmp = dx;
-    dx = dy;
-    dy = tmp;
+    int tmp;
+    tmp = x0;
+    x0 = y0;
+    y0 = tmp;
+    tmp = x1;
+    x1 = y1;
+    y1 = tmp;
   }
 
-  if (dx == 0) {
-    // Single pixel line
-    if (x0 >= 0 && x0 < pixelBuffer->width && y0 >= 0 && y0 < pixelBuffer->height) {
-      int idx = y0 * pixelBuffer->width + x0;
-      if (z0 < pixelBuffer->depthBuffer[idx]) {
-        pixelBuffer->depthBuffer[idx] = z0;
-        pixelBuffer->pixels[idx] = color;
-      }
-    }
-    return;
+  if (x0 > x1) {
+    int tmp;
+    tmp = x0;
+    x0 = x1;
+    x1 = tmp;
+    tmp = y0;
+    y0 = y1;
+    y1 = tmp;
+    float ztmp = z0;
+    z0 = z1;
+    z1 = ztmp;
   }
 
-  int x = x0;
+  int dx = x1 - x0;
+  int dy = abs(y1 - y0);
+  int error = dx / 2;
+  int ystep = (y0 < y1) ? 1 : -1;
   int y = y0;
-  float dz = z1 - z0;
-  float t = 0.0f;
-  float dt = (dx != 0) ? 1.0f / (float)dx : 0.0f;
 
-  int e = 2 * dy - dx;
-  for (int i = 0; i <= dx; i++) {
-    if (x >= 0 && x < pixelBuffer->width && y >= 0 && y < pixelBuffer->height) {
-      float z = z0 + t * dz;
-      int idx = y * pixelBuffer->width + x;
-      if (z < pixelBuffer->depthBuffer[idx]) {
-        pixelBuffer->depthBuffer[idx] = z;
-        pixelBuffer->pixels[idx] = color;
-      }
+  for (int x = x0; x <= x1; x++) {
+    float t = dx == 0 ? 0.0f : (float)(x - x0) / dx;
+    float z = z0 + t * (z1 - z0);
+
+    int drawX = steep ? y : x;
+    int drawY = steep ? x : y;
+
+    if (drawX >= 0 && drawX < pixelBuffer->width && drawY >= 0 && drawY < pixelBuffer->height) {
+      int idx = drawY * pixelBuffer->width + drawX;
+      // if (z < pixelBuffer->depthBuffer[idx]) {
+      pixelBuffer->depthBuffer[idx] = z;
+      pixelBuffer->pixels[idx] = color;
+      // }
     }
 
-    while (e >= 0) {
-      if (steep)
-        x += signx;
-      else
-        y += signy;
-
-      e -= 2 * dx;
+    error -= dy;
+    if (error < 0) {
+      y += ystep;
+      error += dx;
     }
-
-    if (steep)
-      y += signy;
-    else
-      x += signx;
-
-    e += 2 * dy;
-    t += dt;
   }
 }

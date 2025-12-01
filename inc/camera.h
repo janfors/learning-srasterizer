@@ -3,6 +3,8 @@
 
 #include <rmath.h>
 
+static const Vec3f worldUp = {0, 1, 0};
+
 typedef struct {
   Vec3f eye;
   Vec3f target;

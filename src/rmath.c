@@ -35,9 +35,9 @@ Mat4f mat4fLookAt(Vec3f eye, Vec3f target, Vec3f up) {
   Vec3f u = cross(s, f);
 
   return (Mat4f){{
-      {s.x, u.x, -f.x, 0},
-      {s.y, u.y, -f.y, 0},
-      {s.z, u.z, -f.z, 0},
-      {-dot(s, eye), -dot(u, eye), dot(f, eye), 1.0f},
+      {s.x, s.y, s.z, -dot(s, eye)},
+      {u.x, u.y, u.z, -dot(u, eye)},
+      {-f.x, -f.y, -f.z, dot(f, eye)},
+      {0.0f, 0.0f, 0.0f, 1.0f},
   }};
 }
