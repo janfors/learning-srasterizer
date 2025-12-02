@@ -15,6 +15,8 @@ typedef struct {
   size_t indexCount;
   size_t indexCapacity;
 
+  Mat4f modelMatrix;
+
   uint32_t color;
 } Mesh;
 

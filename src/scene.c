@@ -71,7 +71,8 @@ static void renderMesh(Scene *scene, Mesh *mesh, PixelBuffer *pixelBuffer, bool 
 
 void sceneRender(Scene *scene, PixelBuffer *pixelBuffer) {
   for (int i = 0; i < scene->count; i++) {
-    Mat4f mvp = mat4fMul(scene->camera.projection, scene->camera.view);
+    Mat4f vp = mat4fMul(scene->camera.projection, scene->camera.view);
+    Mat4f mvp = mat4fMul(vp, scene->meshes[i]->modelMatrix);
     Mesh *transformed = transformMeshToClipSpace(scene->meshes[i], mvp, pixelBuffer);
 
     renderMesh(scene, transformed, pixelBuffer, scene->wireframeMode);

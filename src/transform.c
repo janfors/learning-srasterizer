@@ -146,5 +146,9 @@ int clipTrianglePlane(Vertex *in, int inCount, Vertex *out, Plane plane, PixelBu
     }
   }
 
+  // for (int i = 0; i < outCount; i++) {
+  //   toNdc(&out[i], pixelBuffer);
+  // }
+
   return outCount;
 }

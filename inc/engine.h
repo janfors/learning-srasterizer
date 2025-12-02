@@ -37,7 +37,7 @@ void engineDestroy(Engine *engine);
 
 // converts 4 uint8_t -> uint32_t
 static inline uint32_t rgbu32(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
-  return (uint32_t)(a << 24 | a << 16 | g << 8 | b);
+  return (uint32_t)(a << 24 | r << 16 | g << 8 | b);
 }
 
 #endif // !_ENGINE_H

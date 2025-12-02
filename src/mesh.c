@@ -20,6 +20,8 @@ Mesh *initMesh(uint32_t color, size_t initialVertexCapacity, size_t initialIdxCa
 
   mesh->color = color;
 
+  mesh->modelMatrix = mat4fIdentity();
+
   return mesh;
 }
 

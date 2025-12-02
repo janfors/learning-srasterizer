@@ -1,7 +1,7 @@
 #include <engine.h>
 
 static Mesh *createTestCube() {
-  Mesh *mesh = initMesh(rgbu32(100, 180, 129, 255), 8, 36);
+  Mesh *mesh = initMesh(rgbu32(80, 140, 100, 255), 8, 36);
 
   // Vertices
   addVertex(mesh, newVertex(-0.5f, -0.5f, -0.5f)); // 0
@@ -46,9 +46,6 @@ static void sceneSetup(Engine *engine) {
                                      100.0f);
 
   Mesh *mesh = createTestCube();
-  for (size_t i = 0; i < mesh->vertexCount; i++) {
-    mesh->vertices[i].pos.z -= 5.0f;
-  }
   sceneAddMesh(engine->scene, mesh);
 }
 
