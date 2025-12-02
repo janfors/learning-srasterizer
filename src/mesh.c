@@ -56,4 +56,6 @@ void freeMesh(Mesh *mesh) {
   mesh->capacity = 0;
   mesh->indexCapacity = 0;
   mesh->color = 0;
+
+  free(mesh);
 }

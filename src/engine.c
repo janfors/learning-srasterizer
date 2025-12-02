@@ -185,7 +185,9 @@ void updatePixels(Engine *engine) {
 
 void engineDestroy(Engine *engine) {
   sceneDeinit(engine->scene);
+  free(engine->scene);
   free(engine->pixelBuff.pixels);
+  free(engine->pixelBuff.depthBuffer);
   SDL_DestroyTexture(engine->texture);
   SDL_DestroyRenderer(engine->renderer);
   SDL_DestroyWindow(engine->window);
