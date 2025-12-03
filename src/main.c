@@ -1,4 +1,5 @@
 #include <engine.h>
+#include <modelLoad.h>
 
 static Mesh *createTestCube() {
   Mesh *mesh = initMesh(rgbu32(80, 140, 100, 255), 8, 36);
@@ -45,8 +46,16 @@ static void sceneSetup(Engine *engine) {
                                      0.1f, // near
                                      100.0f);
 
-  Mesh *mesh = createTestCube();
-  sceneAddMesh(engine->scene, mesh);
+  // Mesh *mesh = createTestCube();
+  // sceneAddMesh(engine->scene, mesh);
+
+  ModelData *fish = modelDataInit(64, 64, 64, 16);
+  parseObj(fish, "fish.obj");
+  Mesh *fishMesh = initMesh(rgbu32(20, 30, 200, 255), 64, 64);
+  meshFromModel(fishMesh, fish);
+  sceneAddMesh(engine->scene, fishMesh);
+
+  freeModelData(fish);
 }
 
 int main() {

@@ -133,7 +133,7 @@ static void handleEvents(Engine *engine, float dt) {
 
   // temporary moving cube test
   engine->scene->meshes[0]->modelMatrix =
-      mat4fMul(mat4RotX(1 * dt), engine->scene->meshes[0]->modelMatrix);
+      mat4fMul(mat4fRotY(1 * dt), engine->scene->meshes[0]->modelMatrix);
 
   // DEBUG:
   // debugCameraOutput(&engine->scene->camera);

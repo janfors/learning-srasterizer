@@ -54,7 +54,7 @@ static inline Mat4f mat4fScale(Vec3f vec) {
 }
 
 // Returns the rotation Mat4f around the X axis
-static inline Mat4f mat4RotX(float angle) {
+static inline Mat4f mat4fRotX(float angle) {
   return (Mat4f){{
       {1, 0, 0, 0},
       {0, cosf(angle), -sinf(angle), 0},

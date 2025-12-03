@@ -1,6 +1,7 @@
 #ifndef _MESH_H
 #define _MESH_H
 
+#include <modelLoad.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -24,6 +25,9 @@ typedef struct {
 // as to not waste memory
 Mesh *initMesh(uint32_t color, size_t initialVertexCapacity, size_t initialIdxCapacity);
 void freeMesh(Mesh *mesh);
+
+// uses the data from ModelData to create a mesh
+void meshFromModel(Mesh *mesh, ModelData *data);
 
 // adds the vertex to the meshes vertices
 void addVertex(Mesh *mesh, Vertex v);

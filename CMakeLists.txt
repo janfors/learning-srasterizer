@@ -16,9 +16,12 @@ set(SRCS
     src/scene.c
     src/camera.c
     src/mesh.c
-    src/transform.c)
+    src/transform.c
+    src/modelLoad.c)
 
 add_executable(app ${SRCS})
 
 target_include_directories(app PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/inc)
 target_link_libraries(app PRIVATE SDL2::SDL2 m)
+target_compile_definitions(app
+                           PUBLIC RES_DIR="${CMAKE_CURRENT_SOURCE_DIR}/res/")
