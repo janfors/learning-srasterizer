@@ -6,9 +6,14 @@
 typedef struct {
   Vec3f pos;
   Vec4f clip;
+
   float screenX;
   float screenY;
   float depth;
+
+  Vec3f normals;
+  Vec2f uv;
+
   float invW;
 } Vertex;
 

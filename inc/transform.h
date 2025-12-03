@@ -14,7 +14,7 @@ typedef enum {
 } Plane;
 
 // takes in mesh in local space and returns a new mesh with vertices in screen space
-Mesh *transformMeshToClipSpace(Mesh *mesh, Mat4f mvp, PixelBuffer *pixelBuffer);
+Mesh *transformMeshToClipSpace(Mesh *mesh, Mat4f v, Mat4f mvp, PixelBuffer *pixelBuffer);
 
 Vec4f intersectPlane(Vec4f a, Vec4f b, Plane plane);
 int clipTrianglePlane(Vertex *in, int inCount, Vertex *out, Plane plane, PixelBuffer *pixelBuffer);

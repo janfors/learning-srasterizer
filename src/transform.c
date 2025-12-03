@@ -3,8 +3,11 @@
 #include <string.h>
 #include <transform.h>
 
-Mesh *transformMeshToClipSpace(Mesh *mesh, Mat4f mvp, PixelBuffer *pixelBuffer) {
+Mesh *transformMeshToClipSpace(Mesh *mesh, Mat4f v, Mat4f mvp, PixelBuffer *pixelBuffer) {
   Mesh *out = initMesh(mesh->color, mesh->vertexCount, mesh->indexCount);
+
+  Mat4f modelView = mat4fMul(v, mesh->modelMatrix);
+  Mat4f normalMat = mat4fTranspose(mat4fInverse(modelView));
 
   for (int i = 0; i < mesh->vertexCount; i++) {
     Vec4f v = {mesh->vertices[i].pos.x, mesh->vertices[i].pos.y, mesh->vertices[i].pos.z, 1.0f};
@@ -14,6 +17,9 @@ Mesh *transformMeshToClipSpace(Mesh *mesh, Mat4f mvp, PixelBuffer *pixelBuffer) 
     outVertex.clip = clip;
     outVertex.invW = 1.0f / clip.w;
 
+    outVertex.normals = mat4fMulVec3f(normalMat, mesh->vertices[i].normals);
+    outVertex.normals = normalizeVec3f(outVertex.normals);
+
     addVertex(out, outVertex);
   }
 
@@ -21,6 +27,7 @@ Mesh *transformMeshToClipSpace(Mesh *mesh, Mat4f mvp, PixelBuffer *pixelBuffer) 
   memcpy(out->indices, mesh->indices, sizeof(size_t) * mesh->indexCount);
   out->vertexCount = mesh->vertexCount;
   out->indexCount = mesh->indexCount;
+  out->modelMatrix = mesh->modelMatrix;
 
   return out;
 }
@@ -125,6 +132,7 @@ int clipTrianglePlane(Vertex *in, int inCount, Vertex *out, Plane plane, PixelBu
       v.pos = (Vec3f){ipt.x, ipt.y, ipt.z};
       v.clip = ipt;
       v.invW = invW;
+      v.normals = curr.normals;
 
       toNdc(&v, pixelBuffer);
 
@@ -137,6 +145,7 @@ int clipTrianglePlane(Vertex *in, int inCount, Vertex *out, Plane plane, PixelBu
       v.pos = (Vec3f){ipt.x, ipt.y, ipt.z};
       v.clip = ipt;
       v.invW = invW;
+      v.normals = next.normals;
 
       toNdc(&v, pixelBuffer);
 

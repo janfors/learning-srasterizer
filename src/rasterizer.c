@@ -12,7 +12,7 @@ void pixelsClearColor(PixelBuffer *pixelBuffer, uint32_t color) {
 }
 
 void drawTriangleFilled(Vertex *v1, Vertex *v2, Vertex *v3, uint32_t color,
-                        PixelBuffer *pixelBuffer) {
+                        PixelBuffer *pixelBuffer, Mat4f view) {
   BoundingBox bounds = getTriangleBoundingBox(v1->screenX, v1->screenY, v2->screenX, v2->screenY,
                                               v3->screenX, v3->screenY);
   bounds.minX = maxi(0, bounds.minX);
@@ -85,8 +85,24 @@ void drawTriangleFilled(Vertex *v1, Vertex *v2, Vertex *v3, uint32_t color,
 
         int idx = y * pixelBuffer->width + x;
         if (z < pixelBuffer->depthBuffer[idx]) {
+          Vec3f normalInterp =
+              scaleVec3f(addVec3f(addVec3f(scaleVec3f(v1->normals, bw0 * v1->invW),
+                                           scaleVec3f(v2->normals, bw1 * v2->invW)),
+                                  scaleVec3f(v3->normals, bw2 * v3->invW)),
+                         1.0f / invWInterp);
+          normalInterp = normalizeVec3f(normalInterp);
+
+          // temp
+          Vec3f lightDir = {1, 1, 0};
+          lightDir = normalizeVec3f(mat4fMulDir(view, lightDir));
+
+          float lambert = maxf(dot(normalInterp, lightDir), 0.0f);
+          uint8_t r = ((color >> 16) & 0xFF) * lambert;
+          uint8_t g = ((color >> 8) & 0xFF) * lambert;
+          uint8_t b = (color & 0xFF) * lambert;
+
           pixelBuffer->depthBuffer[idx] = z;
-          pixelBuffer->pixels[idx] = color;
+          pixelBuffer->pixels[idx] = rgbu32(r, g, b, 255);
         }
       }
 

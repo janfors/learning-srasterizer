@@ -131,9 +131,8 @@ static void handleEvents(Engine *engine, float dt) {
 
   updateCameraView(&engine->scene->camera);
 
-  // temporary moving cube test
-  engine->scene->meshes[0]->modelMatrix =
-      mat4fMul(mat4fRotY(1 * dt), engine->scene->meshes[0]->modelMatrix);
+  // engine->scene->meshes[0]->modelMatrix =
+  //     mat4fMul(mat4fRotY(1 * dt), engine->scene->meshes[0]->modelMatrix);
 
   // DEBUG:
   // debugCameraOutput(&engine->scene->camera);

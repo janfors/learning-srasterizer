@@ -12,7 +12,7 @@ void pixelsClearColor(PixelBuffer *pixelBuffer, uint32_t color);
 
 // draw a triangle using a Barycentric Algorithm on the pixelBuffer
 void drawTriangleFilled(Vertex *v1, Vertex *v2, Vertex *v3, uint32_t color,
-                        PixelBuffer *pixelBuffer);
+                        PixelBuffer *pixelBuffer, Mat4f view);
 void drawTriangleWireframe(Vertex *v1, Vertex *v2, Vertex *v3, uint32_t color,
                            PixelBuffer *pixelBuffer);
 

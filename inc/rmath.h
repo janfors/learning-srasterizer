@@ -97,6 +97,21 @@ static inline Vec4f mat4fMulVec4f(Mat4f m, Vec4f v) {
                  m.m[3][0] * v.x + m.m[3][1] * v.y + m.m[3][2] * v.z + m.m[3][3] * v.w};
 }
 
+static inline Vec3f mat4fMulVec3f(Mat4f m, Vec3f v) {
+  Vec4f res = mat4fMulVec4f(m, (Vec4f){v.x, v.y, v.z, 1.0f});
+  return (Vec3f){res.x, res.y, res.z};
+}
+static inline Vec3f mat4fMulDir(Mat4f m, Vec3f dir) {
+  return (Vec3f){
+      m.m[0][0] * dir.x + m.m[0][1] * dir.y + m.m[0][2] * dir.z,
+      m.m[1][0] * dir.x + m.m[1][1] * dir.y + m.m[1][2] * dir.z,
+      m.m[2][0] * dir.x + m.m[2][1] * dir.y + m.m[2][2] * dir.z,
+  };
+}
+
+Mat4f mat4fInverse(Mat4f m);
+Mat4f mat4fTranspose(Mat4f m);
+
 Mat4f mat4fLookAt(Vec3f eye, Vec3f target, Vec3f up);
 
 // Returns the normalized Vec3f
