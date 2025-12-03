@@ -35,6 +35,25 @@ void addVertex(Mesh *mesh, Vertex v) {
   mesh->vertices[mesh->vertexCount++] = v;
 }
 
+// Will figure something out later
+static size_t addUniqueVertex(Mesh *mesh, Vec3f pos, Vec3f normal, Vec2f uv) {
+  for (size_t i = 0; i < mesh->vertexCount; i++) {
+    Vertex v = mesh->vertices[i];
+
+    if (memcmp(&v.pos, &pos, sizeof(Vec3f)) == 0 &&
+        memcmp(&v.normals, &normal, sizeof(Vec3f)) == 0 && memcmp(&v.uv, &uv, sizeof(Vec2f)) == 0) {
+      return i;
+    }
+  }
+
+  Vertex v;
+  v.pos = pos;
+  v.normals = normal;
+  v.uv = uv;
+  addVertex(mesh, v);
+  return mesh->vertexCount - 1;
+}
+
 void meshFromModel(Mesh *mesh, ModelData *data) {
   if (mesh->indexCapacity < data->indexCount) {
     mesh->indexCapacity = data->indexCount;
@@ -47,9 +66,12 @@ void meshFromModel(Mesh *mesh, ModelData *data) {
     size_t normalsIdx = data->normalIndices[i];
 
     Vec3f pos = data->pos[posIdx];
+    Vec3f normals = data->normals[normalsIdx];
+    Vec2f uv = data->uv[uvIdx];
+
     Vertex v = newVertex(pos.x, pos.y, pos.z);
-    v.uv = data->uv[uvIdx];
-    v.normals = data->normals[normalsIdx];
+    v.uv = uv;
+    v.normals = normals;
 
     addVertex(mesh, v);
     mesh->indices[mesh->indexCount++] = mesh->vertexCount - 1;

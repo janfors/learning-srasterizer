@@ -21,6 +21,12 @@ typedef struct {
   uint32_t color;
 } Mesh;
 
+typedef struct {
+  Vec3f pos;
+  Vec3f normal;
+  Vec2f uv;
+} VertexKey;
+
 // Returns an initilized mesh, initialIdxCapacity should be a multiple of 3
 // as to not waste memory
 Mesh *initMesh(uint32_t color, size_t initialVertexCapacity, size_t initialIdxCapacity);
