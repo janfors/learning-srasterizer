@@ -12,3 +12,4 @@ Some features are not yet implemented such as proper texturing and UV usage, and
 
 ## Pictures
 <img width="963" height="409" alt="image" src="https://github.com/user-attachments/assets/fb2483cd-cba7-4a9a-9880-fe8fce78e1f1" />
+<img width="1007" height="483" alt="image" src="https://github.com/user-attachments/assets/3cd5428b-ee2e-4324-9a34-7c60b26d4aeb" />
